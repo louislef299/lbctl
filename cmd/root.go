@@ -12,10 +12,13 @@ import (
 	"path"
 	"strings"
 
-	lberror "github.com/louislef299/lbctl/error"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+)
+
+var (
+	configFile string
 )
 
 var rootCmd = &cobra.Command{
@@ -46,39 +49,35 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	home, err := homedir.Dir()
+	if err != nil {
+		log.Fatal(err)
+	}
+	configPath := path.Join(home, ".lbctl")
+	rootCmd.PersistentFlags().StringVar(&configFile, "config", configPath, "Path to config file")
 
 	configInit()
 }
 
 func configInit() {
-	home, err := homedir.Dir()
-	lberror.CheckError(err)
-	configPath := path.Join(home, ".lbctl")
-
 	configName := "config"
 	viper.SetConfigName(configName)
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(configPath)
+	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath(configFile)
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// config file not found, check if config folder exists
-			if _, err := os.Stat(configPath); os.IsNotExist(err) {
-				err = os.Mkdir(configPath, 0744)
+			if _, err := os.Stat(configFile); os.IsNotExist(err) {
+				err = os.Mkdir(configFile, 0744)
 				if err != nil {
 					log.Fatal(err)
 				}
 			}
-			interactive(configPath, configName)
+			interactive(configFile, configName)
 		} else {
 			log.Fatal(err)
 		}
-	}
-	name := viper.Get("name")
-	email := viper.Get("email")
-	if name == nil || email == nil {
-		interactive(configPath, configName)
 	}
 }
 
@@ -90,13 +89,13 @@ func interactive(configPath, configName string) {
 		log.Fatal("An error occured while reading input. Please try again", err)
 	}
 	input = strings.TrimSuffix(input, "\n")
-	viper.Set("name", input)
+	viper.Set("user.name", input)
 	fmt.Printf("enter your email: ")
 	input, err = reader.ReadString('\n')
 	if err != nil {
 		log.Fatal("An error occured while reading input. Please try again", err)
 	}
 	input = strings.TrimSuffix(input, "\n")
-	viper.Set("email", input)
+	viper.Set("user.email", input)
 	viper.WriteConfigAs(path.Join(configPath, configName))
 }
