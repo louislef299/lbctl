@@ -1,4 +1,4 @@
-package lberror
+package error
 
 func CheckError(err error) {
 	if err != nil {
