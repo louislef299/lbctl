@@ -8,6 +8,7 @@ require (
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.1
+	github.com/tysonmote/gommap v0.0.2
 	google.golang.org/protobuf v1.28.0
 )
 
