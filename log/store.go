@@ -41,6 +41,7 @@ func newStore(f *os.File) (*store, error) {
 	}, nil
 }
 
+// Write record length and then record data
 func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
