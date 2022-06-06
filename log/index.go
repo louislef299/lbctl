@@ -15,7 +15,7 @@ var (
 
 type index struct {
 	file *os.File
-	mmap gommap.MMAP
+	mmap gommap.MMap
 	size uint64
 }
 
