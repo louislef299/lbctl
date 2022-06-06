@@ -51,6 +51,7 @@ func (i *index) Read(in int64) (out uint32, pos uint64, err error) {
 		return 0, 0, io.EOF
 	}
 	if in == -1 {
+		// if -1, just read the last entry
 		out = uint32((i.size / entWidth) - 1)
 	} else {
 		out = uint32(in)
