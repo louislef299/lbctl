@@ -54,8 +54,8 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	if err != nil {
 		return 0, 0, err
 	}
-	w += lenWidth // uint64 size
-	s.size += uint64(w)
+	w += lenWidth       // uint64 size for the binary write
+	s.size += uint64(w) // record length + record data
 	return uint64(w), pos, nil
 }
 
@@ -66,11 +66,11 @@ func (s *store) Read(pos uint64) ([]byte, error) {
 	if err := s.buf.Flush(); err != nil {
 		return nil, err
 	}
-	size := make([]byte, lenWidth)
+	size := make([]byte, lenWidth) // Save size of record to read
 	if _, err := s.File.ReadAt(size, int64(pos)); err != nil {
 		return nil, err
 	}
-	b := make([]byte, enc.Uint64(size))
+	b := make([]byte, enc.Uint64(size)) // Save actual record to return with the given size
 	if _, err := s.File.ReadAt(b, int64(pos+lenWidth)); err != nil {
 		return nil, err
 	}

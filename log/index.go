@@ -13,6 +13,8 @@ var (
 	entWidth        = offWidth + posWidth
 )
 
+// A memory-amppable storage for record indicies in the store
+// Works similar to a bitmap
 type index struct {
 	file *os.File
 	mmap gommap.MMap
@@ -45,7 +47,7 @@ func newIndex(f *os.File, c Config) (*index, error) {
 	return idx, nil
 }
 
-// Takes an offset and returns the associated record's position in the store
+// Takes an offset and returns the associated record's position in the store. If there are no records, returns io.EOF to specify an empty index
 func (i *index) Read(in int64) (out uint32, pos uint64, err error) {
 	if i.size == 0 {
 		return 0, 0, io.EOF
