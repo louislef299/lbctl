@@ -7,3 +7,20 @@ compile:
 		--proto_path=.
 test:
 	go test -race -v ./...
+
+clean:
+	rm -rf diff
+	go clean -modcache && go mod tidy
+
+GITBRANCH=$(shell git branch --show-current)
+release:
+	@if [ $(GITBRANCH) == "main" ]; then \
+		goreleaser check; \
+		goreleaser release --rm-dist; \
+	else \
+		echo "you can only release on the main branch"; \
+		exit 1; \
+	fi 
+mock-release:
+	goreleaser check
+	goreleaser release --snapshot --rm-dist
