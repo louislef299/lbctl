@@ -9,7 +9,7 @@ test:
 	go test -race -v ./...
 
 clean:
-	rm -rf diff
+	rm -rf dist
 	go clean -modcache && go mod tidy
 
 GITBRANCH=$(shell git branch --show-current)
