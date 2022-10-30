@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	api "github.com/louislef299/lbctl/api/v1"
-	"github.com/louislef299/lbctl/log"
+	"github.com/louislef299/lbctl/internal/log"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 )

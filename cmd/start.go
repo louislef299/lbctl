@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 Louis Lefebvre <lefeb073@umn.com>
-
 */
 package cmd
 
@@ -8,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/louislef299/lbctl/logserver"
+	"github.com/louislef299/lbctl/internal/logserver"
 	"github.com/spf13/cobra"
 )
 

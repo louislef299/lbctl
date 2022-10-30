@@ -7,8 +7,18 @@ import (
 	"google.golang.org/grpc"
 )
 
+type CommitLog interface {
+	Append(*api.Record) (uint64, error)
+	Read(uint64) (*api.Record, error)
+}
+
 type Config struct {
 	CommitLog CommitLog
+}
+
+type grpcServer struct {
+	api.UnimplementedLogServer
+	*Config
 }
 
 var _ api.LogServer = (*grpcServer)(nil)
@@ -21,11 +31,6 @@ func NewGRPCServer(config *Config) (*grpc.Server, error) {
 	}
 	api.RegisterLogServer(gsrv, srv)
 	return gsrv, nil
-}
-
-type grpcServer struct {
-	api.UnimplementedLogServer
-	*Config
 }
 
 func newgrpcServer(config *Config) (srv *grpcServer, err error) {
@@ -89,9 +94,4 @@ func (s *grpcServer) ConsumeStream(req *api.ConsumeRequest, stream api.Log_Consu
 			req.Offset++
 		}
 	}
-}
-
-type CommitLog interface {
-	Append(*api.Record) (uint64, error)
-	Read(uint64) (*api.Record, error)
 }
