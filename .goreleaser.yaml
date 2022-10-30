@@ -30,4 +30,4 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
-dist: releases/'{{ .Version }}''
+dist: releases/'{{ .Version }}'
